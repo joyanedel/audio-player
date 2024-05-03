@@ -22,13 +22,7 @@ fn main() {
     for c in stdin.keys() {
         match c.unwrap() {
             Key::Esc => break,
-            Key::Char(' ') => {
-                if sink.is_paused() {
-                    sink.play();
-                } else {
-                    sink.pause();
-                }
-            }
+            Key::Char(' ') => toggle_play_pause(&sink),
             Key::Right => increase_song_speed(&sink, 0.02),
             Key::Left => decrease_song_speed(&sink, 0.02),
             Key::Up => increase_song_volume(&sink, 0.02),
@@ -113,5 +107,13 @@ fn decrease_song_speed(sink: &Sink, step: f32) {
 
     if current_speed > 0.0 {
         sink.set_speed(f32::max(current_speed - step, 0.001));
+    }
+}
+
+fn toggle_play_pause(sink: &Sink) {
+    if sink.is_paused() {
+        sink.play();
+    } else {
+        sink.pause();
     }
 }
