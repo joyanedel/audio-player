@@ -1,0 +1,29 @@
+name: 🧪 Tests
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  checkout:
+    name: 📦 Checkout
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+  
+  tests:
+    name: 🧪 Test
+    needs: checkout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: cargo test --all-features
+
+      - name: Format code
+        run: cargo fmt --all -- --check
+      
+      - name: Lint code
+        run: cargo clippy --all-features -- -D warnings
