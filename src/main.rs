@@ -1,3 +1,7 @@
+mod song_handler;
+
+use song_handler::*;
+
 use rodio::Sink;
 use rodio::{Decoder, OutputStream};
 use std::fs::File;
@@ -24,9 +28,15 @@ fn main() {
             Key::Esc => break,
             Key::Char(' ') => toggle_play_pause(&sink),
             Key::Right => increase_song_speed(&sink, 0.02),
-            Key::Left => decrease_song_speed(&sink, 0.02),
-            Key::Up => increase_song_volume(&sink, 0.02),
-            Key::Down => decrease_song_volume(&sink, 0.02),
+            Key::Left => decrease_song_speed(&sink, 0.02).unwrap_or_else(|_| {
+                sink.set_speed(0.01);
+            }),
+            Key::Up => increase_song_volume(&sink, 0.02).unwrap_or_else(|_| {
+                sink.set_volume(1.0);
+            }),
+            Key::Down => decrease_song_volume(&sink, 0.02).unwrap_or_else(|_| {
+                sink.set_volume(0.00);
+            }),
             _ => (),
         }
 
@@ -78,42 +88,4 @@ fn show_current_song_information(stdout: &mut RawTerminal<Stdout>, sink: &Sink) 
     )
     .unwrap();
     stdout.flush().unwrap();
-}
-
-fn increase_song_volume(sink: &Sink, step: f32) {
-    let current_volume = sink.volume();
-
-    if current_volume < 1.0 {
-        println!("{}", current_volume);
-        sink.set_volume(f32::min(current_volume + step, 1.0));
-    }
-}
-
-fn decrease_song_volume(sink: &Sink, step: f32) {
-    let current_volume = sink.volume();
-
-    if current_volume > 0.0 {
-        sink.set_volume(f32::max(current_volume - step, 0.0));
-    }
-}
-
-fn increase_song_speed(sink: &Sink, step: f32) {
-    let current_speed = sink.speed();
-    sink.set_speed(current_speed + step);
-}
-
-fn decrease_song_speed(sink: &Sink, step: f32) {
-    let current_speed = sink.speed();
-
-    if current_speed > 0.0 {
-        sink.set_speed(f32::max(current_speed - step, 0.001));
-    }
-}
-
-fn toggle_play_pause(sink: &Sink) {
-    if sink.is_paused() {
-        sink.play();
-    } else {
-        sink.pause();
-    }
 }
