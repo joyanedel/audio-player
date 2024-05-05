@@ -60,7 +60,8 @@ fn show_current_song_information(stdout: &mut RawTerminal<Stdout>, sink: &Sink) 
     .unwrap();
 
     // write current song
-    write!(stdout, "Current song: {}", "Bat Country").unwrap();
+    let song_name = "Bat Country";
+    write!(stdout, "Current song: {}", song_name).unwrap();
     if sink.is_paused() {
         write!(stdout, " [PAUSED]").unwrap();
     }
