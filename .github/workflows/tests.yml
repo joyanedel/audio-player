@@ -8,17 +8,13 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  checkout:
-    name: 📦 Checkout
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-  
   tests:
     name: 🧪 Test
-    needs: checkout
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Run tests
         run: cargo test --all-features
 
