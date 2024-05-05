@@ -12,6 +12,9 @@ jobs:
     name: 🧪 Test
     runs-on: ubuntu-latest
     steps:
+      - name: Install libasound
+        run: sudo apt install libasound2-dev
+
       - name: Checkout
         uses: actions/checkout@v3
 
